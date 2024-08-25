@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>윤식당 카운터</title>
+    <style>
+        button {
+            font-size: 20px;
+            margin: 5px;
+        }
+        #result {
+            font-size: 30px;
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        let count = 0; // 카운트 변수를 초기화합니다.
+
+        // 서버에서 현재 카운트를 가져오는 함수입니다.
+        async function fetchCount() {
+            try {
+                const response = await fetch('/count');
+                const data = await response.json();
+                count = data.count;
+                updateDisplay();
+            } catch (error) {
+                console.error('Error fetching count:', error);
+            }
+        }
+
+        // 카운트를 화면에 표시하는 함수입니다.
+        function updateDisplay() {
+            document.getElementById('result').innerText = count;
+        }
+
+        // 버튼 클릭 시 호출되는 함수입니다.
+        async function handleButtonClick(action) {
+            if (action === 'plus') {
+                count++; // 'plus' 버튼 클릭 시 카운트를 증가시킵니다.
+            } else if (action === 'minus') {
+                count--; // 'minus' 버튼 클릭 시 카운트를 감소시킵니다.
+            }
+            updateDisplay(); // 화면을 업데이트합니다.
+
+            // 서버에 카운트 값을 업데이트하는 함수입니다.
+            try {
+                await fetch('/count', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ count })
+                });
+            } catch (error) {
+                console.error('Error updating count:', error);
+            }
+        }
+
+        // 페이지가 로드되면 서버에서 현재 카운트를 가져옵니다.
+        window.onload = fetchCount;
+    </script>
+</head>
+<body>
+    <h1><a href="index.html">광운대 식당</a></h1>
+    <ol>
+        <li><a href="1.html">윤식당</a></li>
+        <li><a href="2.html">후문식당</a></li>
+        <li><a href="3.html">경대컵밥</a></li>
+        <li><a href="4.html">밥은화</a></li>
+    </ol>
+
+    <h2>윤식당</h2>
+    <input type="button" onclick="handleButtonClick('plus')" value="+" />
+    <input type="button" onclick="handleButtonClick('minus')" value="-" />
+    <div id="result">0</div> <!-- 카운트를 표시할 영역입니다. -->
+</body>
+</html>

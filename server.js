@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;  // 환경 변수 PORT 사용
 
 // 카운트 값을 저장할 변수
 let count = 0;
